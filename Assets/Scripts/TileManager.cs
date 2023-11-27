@@ -20,12 +20,15 @@ public class TileManager : MonoBehaviour
 
     private string nonHoverColor;
     private string hoverColor;
+    private string oldTileNonHoverColor;
+    private string oldTileHoverColor;
 
 
     // Start is called before the first frame update
     void Start()
     {
         _map = GetComponent<Tilemap>();
+        _map.RefreshAllTiles();
         _grid = _map.layoutGrid;
         _tilemapRenderer = GetComponent<TilemapRenderer>();
     }
@@ -42,7 +45,9 @@ public class TileManager : MonoBehaviour
             hoverColor = tile.name.Contains("z-") ? "d-" : "g-";
             if (oldHoveredTile != null)
             {
-                _map.SetTile(oldHoveredTilePos, tiles.Find(t => t.name.Equals(oldHoveredTileName.Replace(hoverColor, nonHoverColor))));
+                oldTileNonHoverColor = oldHoveredTile.name.Contains("z-") ? "r-" : "w-";
+                oldTileHoverColor = oldHoveredTile.name.Contains("z-") ? "d-" : "g-";
+                _map.SetTile(oldHoveredTilePos, tiles.Find(t => t.name.Equals(oldHoveredTileName.Replace(oldTileHoverColor, oldTileNonHoverColor))));
             }
             
             
