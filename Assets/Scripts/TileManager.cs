@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class TestShaderColor : MonoBehaviour
+public class TileManager : MonoBehaviour
 {
     [SerializeField] private float zOffset = 0.25f;
     [SerializeField] private List<TileBase> tiles;
@@ -17,6 +17,9 @@ public class TestShaderColor : MonoBehaviour
     private TileBase oldHoveredTile;
     private Vector3Int oldHoveredTilePos;
     private string oldHoveredTileName;
+
+    private string nonHoverColor;
+    private string hoverColor;
 
 
     // Start is called before the first frame update
@@ -35,14 +38,16 @@ public class TestShaderColor : MonoBehaviour
         TileBase tile = _map.GetTile(currentCellPos);
         if (tile != null)
         {
+            nonHoverColor = tile.name.Contains("z-") ? "r-" : "w-";
+            hoverColor = tile.name.Contains("z-") ? "d-" : "g-";
             if (oldHoveredTile != null)
             {
-                _map.SetTile(oldHoveredTilePos, tiles.Find(t => t.name.Equals(oldHoveredTileName.Replace("g-", "w-"))));
+                _map.SetTile(oldHoveredTilePos, tiles.Find(t => t.name.Equals(oldHoveredTileName.Replace(hoverColor, nonHoverColor))));
             }
             
             
             // _map.SetColor(currentCellPos, Color.red);
-            TileBase replaceTile = tiles.Find(t => t.name.Equals(tile.name.Replace("w-", "g-")));
+            TileBase replaceTile = tiles.Find(t => t.name.Equals(tile.name.Replace(nonHoverColor, hoverColor)));
             _map.SetTile(currentCellPos, replaceTile);
             
             if (Input.GetButtonDown("Fire1"))
