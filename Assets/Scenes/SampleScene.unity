@@ -443,7 +443,7 @@ Tilemap:
       m_TileColorIndex: 4
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
-      m_AllTileFlags: 1073741825
+      m_AllTileFlags: 1073741824
   - first: {x: 1, y: -3, z: 0}
     second:
       serializedVersion: 2
@@ -533,7 +533,7 @@ Tilemap:
       m_TileColorIndex: 4
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
-      m_AllTileFlags: 1073741825
+      m_AllTileFlags: 1073741824
   - first: {x: -2, y: 0, z: 0}
     second:
       serializedVersion: 2
@@ -739,6 +739,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 70af9b004a9f2ba5481ced578b7d4669, type: 2}
   - {fileID: 11400000, guid: 119241b5531fcce53a6871500095255d, type: 2}
   - {fileID: 11400000, guid: 01282d092d99625ed990e3330015acd0, type: 2}
+  noSelectedTilesColor: {r: 0.6156863, g: 0.69411767, b: 0.85490197, a: 1}
 --- !u!1 &1219959603
 GameObject:
   m_ObjectHideFlags: 0
