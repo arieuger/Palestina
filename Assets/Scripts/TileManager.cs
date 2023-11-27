@@ -48,7 +48,7 @@ public class TileManager : MonoBehaviour
 
         if (tile == null) return;
 
-        if (!_isCellSelected) HoverTileColor(tile, currentCellPos);
+        HoverTileColor(tile, currentCellPos);
         if (Input.GetButtonDown("Fire1")) SelectTile(currentCellPos);
         
     }
@@ -57,13 +57,11 @@ public class TileManager : MonoBehaviour
     {
         _nonHoverColor = tile.name.Contains(Zionist) ? Red : White;
         _hoverColor = tile.name.Contains(Zionist) ? DarkRed : Green;
-        if (_oldHoveredTile != null)
+        if (_oldHoveredTile != null && ((_oldHoveredTilePos != _selectedCellPos && _isCellSelected) || !_isCellSelected))
         {
             _oldTileNonHoverColor = _oldHoveredTile.name.Contains(Zionist) ? Red : White;
             _oldTileHoverColor = _oldHoveredTile.name.Contains(Zionist) ? DarkRed : Green;
-            _map.SetTile(_oldHoveredTilePos,
-                tiles.Find(t =>
-                    t.name.Equals(_oldHoveredTileName.Replace(_oldTileHoverColor, _oldTileNonHoverColor))));
+            _map.SetTile(_oldHoveredTilePos, tiles.Find(t => t.name.Equals(_oldHoveredTileName.Replace(_oldTileHoverColor, _oldTileNonHoverColor))));
         }
 
         TileBase replaceTile = tiles.Find(t => t.name.Equals(tile.name.Replace(_nonHoverColor, _hoverColor)));
@@ -76,17 +74,34 @@ public class TileManager : MonoBehaviour
 
     private void SelectTile(Vector3Int currentCellPos)
     {
-        if (!_isCellSelected) _selectedCellPos = currentCellPos;
-
-        if (_selectedCellPos == currentCellPos || !_isCellSelected)
+        if (_isCellSelected)
         {
-            _isCellSelected = !_isCellSelected;
+            Matrix4x4 oldTransformMatrix = _map.GetTransformMatrix(_selectedCellPos);
+            Vector3 downTransform = oldTransformMatrix.GetPosition();
+            downTransform.y -= 0.1f;
+            _map.SetTransformMatrix(_selectedCellPos, Matrix4x4.TRS(downTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
+            
+            TileBase deselectTile = _map.GetTile(_selectedCellPos);
+            string deselectTileHColor = deselectTile.name.Contains(Zionist) ? DarkRed : Green;
+            string deselectTileNhColor = deselectTile.name.Contains(Zionist) ? Red : White;
+            _map.SetTile(_selectedCellPos, tiles.Find(t => t.name.Equals(deselectTile.name.Replace(deselectTileHColor, deselectTileNhColor))));
+        }
+        
+        if (!_isCellSelected || _selectedCellPos != currentCellPos)
+        {
+            _isCellSelected = true;
             Matrix4x4 transformMatrix = _map.GetTransformMatrix(currentCellPos);
             Vector3 upTransform = transformMatrix.GetPosition();
-            upTransform.y += 0.1f * (_isCellSelected ? 1 : -1);
-            _map.SetTransformMatrix(currentCellPos,
-                Matrix4x4.TRS(upTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
+            upTransform.y += 0.1f;
+            _map.SetTransformMatrix(currentCellPos, Matrix4x4.TRS(upTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
+            _selectedCellPos = currentCellPos;
         }
+        else
+        {
+            _isCellSelected = false;
+        }
+        
+        Debug.Log(_map.GetTile(currentCellPos)  + " - " + _isCellSelected);
     }
 
     Vector3Int GetMousePosition () {
