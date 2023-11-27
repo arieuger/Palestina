@@ -26,8 +26,13 @@ public class TileManager : MonoBehaviour
     private bool _isCellSelected;
     private Vector3Int _selectedCellPos;
 
-
-    // Start is called before the first frame update
+    private const string Zionist = "-z-";
+    private const string Palestinian = "-p-";
+    private const string White = "w-";
+    private const string Green = "g-";
+    private const string Red = "r-";
+    private const string DarkRed = "d-";
+    
     void Start()
     {
         _map = GetComponent<Tilemap>();
@@ -36,68 +41,56 @@ public class TileManager : MonoBehaviour
         _tilemapRenderer = GetComponent<TilemapRenderer>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        Vector3 screenToWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3Int currentCellPos = _grid.WorldToCell(new Vector3(screenToWorldPoint.x, screenToWorldPoint.y, zOffset));
+        Vector3Int currentCellPos = GetMousePosition();
         TileBase tile = _map.GetTile(currentCellPos);
-        if (tile != null)
+
+        if (tile == null) return;
+
+        if (!_isCellSelected) HoverTileColor(tile, currentCellPos);
+        if (Input.GetButtonDown("Fire1")) SelectTile(currentCellPos);
+        
+    }
+
+    private void HoverTileColor(TileBase tile, Vector3Int currentCellPos)
+    {
+        _nonHoverColor = tile.name.Contains(Zionist) ? Red : White;
+        _hoverColor = tile.name.Contains(Zionist) ? DarkRed : Green;
+        if (_oldHoveredTile != null)
         {
-            if (!_isCellSelected)
-            {
+            _oldTileNonHoverColor = _oldHoveredTile.name.Contains(Zionist) ? Red : White;
+            _oldTileHoverColor = _oldHoveredTile.name.Contains(Zionist) ? DarkRed : Green;
+            _map.SetTile(_oldHoveredTilePos,
+                tiles.Find(t =>
+                    t.name.Equals(_oldHoveredTileName.Replace(_oldTileHoverColor, _oldTileNonHoverColor))));
+        }
 
-                _nonHoverColor = tile.name.Contains("z-") ? "r-" : "w-";
-                _hoverColor = tile.name.Contains("z-") ? "d-" : "g-";
-                if (_oldHoveredTile != null)
-                {
-                    _oldTileNonHoverColor = _oldHoveredTile.name.Contains("z-") ? "r-" : "w-";
-                    _oldTileHoverColor = _oldHoveredTile.name.Contains("z-") ? "d-" : "g-";
-                    _map.SetTile(_oldHoveredTilePos,
-                        tiles.Find(t =>
-                            t.name.Equals(_oldHoveredTileName.Replace(_oldTileHoverColor, _oldTileNonHoverColor))));
-                }
+        TileBase replaceTile = tiles.Find(t => t.name.Equals(tile.name.Replace(_nonHoverColor, _hoverColor)));
+        _map.SetTile(currentCellPos, replaceTile);
+        
+        _oldHoveredTile = tile;
+        _oldHoveredTilePos = currentCellPos;
+        _oldHoveredTileName = tile.name;
+    }
 
+    private void SelectTile(Vector3Int currentCellPos)
+    {
+        if (!_isCellSelected) _selectedCellPos = currentCellPos;
 
-                // _map.SetColor(currentCellPos, Color.red);
-                TileBase replaceTile = tiles.Find(t => t.name.Equals(tile.name.Replace(_nonHoverColor, _hoverColor)));
-                _map.SetTile(currentCellPos, replaceTile);
-            }
-
-            if (Input.GetButtonDown("Fire1"))
-            {
-//                 _isCellSelected = !_isCellSelected;
-                if (!_isCellSelected)
-                {
-                    _selectedCellPos = currentCellPos;
-                }
-
-                if (_selectedCellPos == currentCellPos || !_isCellSelected)
-                {
-                    _isCellSelected = !_isCellSelected;
-                    Matrix4x4 transformMatrix = _map.GetTransformMatrix(currentCellPos);
-                    Vector3 upTransform = transformMatrix.GetPosition();
-                    upTransform.y += 0.1f * (_isCellSelected ? 1 : -1);
-                    _map.SetTransformMatrix(currentCellPos, Matrix4x4.TRS(upTransform, Quaternion.Euler(0,0,0), Vector3.one));
-                    // _isCellSelected = !_isCellSelected;
-                }
-                
-                // Debug.Log(tile.name);
-                
-            }
-
-            _oldHoveredTile = tile;
-            _oldHoveredTilePos = currentCellPos;
-            _oldHoveredTileName = tile.name;
-            
-            Debug.Log(_isCellSelected);
+        if (_selectedCellPos == currentCellPos || !_isCellSelected)
+        {
+            _isCellSelected = !_isCellSelected;
+            Matrix4x4 transformMatrix = _map.GetTransformMatrix(currentCellPos);
+            Vector3 upTransform = transformMatrix.GetPosition();
+            upTransform.y += 0.1f * (_isCellSelected ? 1 : -1);
+            _map.SetTransformMatrix(currentCellPos,
+                Matrix4x4.TRS(upTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
         }
     }
-    
+
     Vector3Int GetMousePosition () {
-
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        return _grid.WorldToCell(mouseWorldPos);
-
+        Vector3 screenToWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        return _grid.WorldToCell(new Vector3(screenToWorldPoint.x, screenToWorldPoint.y, zOffset));
     }
 }
