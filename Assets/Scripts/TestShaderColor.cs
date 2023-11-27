@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,41 +6,63 @@ using UnityEngine.Tilemaps;
 
 public class TestShaderColor : MonoBehaviour
 {
+    [SerializeField] private float zOffset = 0.25f;
+    [SerializeField] private List<TileBase> tiles;
 
-    [SerializeField] private Tilemap map;
-    private Material _material;
+    private Tilemap _map;
+    private Grid _grid;
     private TilemapRenderer _tilemapRenderer;
     private RaycastHit2D _hit;
-    
+
+    private TileBase oldHoveredTile;
+    private Vector3Int oldHoveredTilePos;
+    private string oldHoveredTileName;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        _map = GetComponent<Tilemap>();
+        _grid = _map.layoutGrid;
         _tilemapRenderer = GetComponent<TilemapRenderer>();
-        _material = _tilemapRenderer.material;
-        // _material.SetColor("_Color", Color.blue);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        Vector3 screenToWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3Int currentCellPos = _grid.WorldToCell(new Vector3(screenToWorldPoint.x, screenToWorldPoint.y, zOffset));
+        TileBase tile = _map.GetTile(currentCellPos);
+        if (tile != null)
         {
-            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            // Debug.Log(map.GetTile(Vector3Int.FloorToInt(pos)));
-            
-            _hit = Physics2D.Raycast(worldPoint, Vector2.down);
-
-            if (_hit.collider != null)
+            if (oldHoveredTile != null)
             {
-                Debug.Log("click on " + _hit.collider.name);
-                Debug.Log(_hit.point);
-
-                var tpos = map.WorldToCell(_hit.point);
-
-                // Try to get a tile from cell position
-                var tile = map.GetTile(tpos);
-                Debug.Log(tile.name);
+                _map.SetTile(oldHoveredTilePos, tiles.Find(t => t.name.Equals(oldHoveredTileName.Replace("g-", "w-"))));
             }
+            
+            
+            // _map.SetColor(currentCellPos, Color.red);
+            TileBase replaceTile = tiles.Find(t => t.name.Equals(tile.name.Replace("w-", "g-")));
+            _map.SetTile(currentCellPos, replaceTile);
+            
+            if (Input.GetButtonDown("Fire1"))
+            {
+            
+              //  map.GetSprite(currentCellPos).;
+                Debug.Log(tile.name);
+                
+            }
+
+            oldHoveredTile = tile;
+            oldHoveredTilePos = currentCellPos;
+            oldHoveredTileName = tile.name;
         }
+    }
+    
+    Vector3Int GetMousePosition () {
+
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        return _grid.WorldToCell(mouseWorldPos);
+
     }
 }
