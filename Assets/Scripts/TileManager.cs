@@ -96,21 +96,16 @@ public class TileManager : MonoBehaviour
                 if (dangerousTile == null || !dangerousTile.name.Contains("-bulldoz-")) continue;
 
                 string direction = dangerousTile.name.Substring(dangerousTile.name.Length - 2);
-                Debug.Log(direction);
                 var paintDangerPosition = cellPosition;
                 switch (direction)
                 {
                     case "do":
-                        paintDangerPosition.x -= 1;
+                    case "up":
+                        paintDangerPosition.x += direction.Equals("up") ? 1 : -1;
                         break;
                     case "le":
-                        paintDangerPosition.y += 1;
-                        break;
                     case "ri":
-                        paintDangerPosition.y -= 1;
-                        break;
-                    case "up":
-                        paintDangerPosition.x += 1;
+                        paintDangerPosition.y += direction.Equals("le") ? 1 : -1;;
                         break;
                 }
 
