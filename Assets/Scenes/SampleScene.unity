@@ -754,6 +754,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 70af9b004a9f2ba5481ced578b7d4669, type: 2}
   - {fileID: 11400000, guid: 01282d092d99625ed990e3330015acd0, type: 2}
   noSelectedTilesColor: {r: 0.6156863, g: 0.69411767, b: 0.85490197, a: 1}
+  dangeredTilesColor: {r: 0.96326894, g: 0.50686896, b: 0.50686896, a: 1}
+  noSelectedDangeredTilesColor: {r: 0.70308584, g: 0.37928897, b: 0.37928897, a: 1}
 --- !u!1 &1219959603
 GameObject:
   m_ObjectHideFlags: 0

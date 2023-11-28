@@ -8,7 +8,9 @@ public class TileManager : MonoBehaviour
 {
     [SerializeField] private float zOffset = 0.25f;
     [SerializeField] private List<TileBase> tiles;
-    [SerializeField] private Color noSelectedTilesColor;
+    [SerializeField] private Color noSelectedTilesColor; // 9DB1DA
+    [SerializeField] private Color dangeredTilesColor; // 
+    [SerializeField] private Color noSelectedDangeredTilesColor; // 
 
     private Tilemap _map;
     private Grid _grid;
@@ -34,6 +36,10 @@ public class TileManager : MonoBehaviour
     private const string Red = "r-";
     private const string DarkRed = "d-";
 
+    private bool _shouldRepaintTiles = true;
+
+    private List<Vector3Int> _dangeredTiles = new List<Vector3Int>();
+
     void Start()
     {
         _map = GetComponent<Tilemap>();
@@ -48,6 +54,7 @@ public class TileManager : MonoBehaviour
         TileBase tile = _map.GetTile(currentCellPos);
         
         HoverTileColor(tile, currentCellPos);
+        if (_shouldRepaintTiles) PaintDangeredTiles();
         
         if (tile == null) return;
         if (Input.GetButtonDown("Fire1")) SelectTile(currentCellPos);
@@ -74,6 +81,48 @@ public class TileManager : MonoBehaviour
         _oldHoveredTile = tile;
         _oldHoveredTilePos = currentCellPos;
         _oldHoveredTileName = tile.name;
+    }
+
+    private void PaintDangeredTiles()
+    {
+        // Set danger by bulldozer tiles
+        BoundsInt bounds = _map.cellBounds;
+        for (int x = bounds.min.x; x < bounds.max.x; x++)
+        {
+            for (int y = bounds.min.y; y < bounds.max.y; y++)
+            {
+                var cellPosition = new Vector3Int(x, y, 0);
+                var dangerousTile = _map.GetTile(cellPosition);
+                if (dangerousTile == null || !dangerousTile.name.Contains("-bulldoz-")) continue;
+
+                string direction = dangerousTile.name.Substring(dangerousTile.name.Length - 2);
+                Debug.Log(direction);
+                var paintDangerPosition = cellPosition;
+                switch (direction)
+                {
+                    case "do":
+                        paintDangerPosition.x -= 1;
+                        break;
+                    case "le":
+                        paintDangerPosition.y += 1;
+                        break;
+                    case "ri":
+                        paintDangerPosition.y -= 1;
+                        break;
+                    case "up":
+                        paintDangerPosition.x += 1;
+                        break;
+                }
+
+                if (_map.GetTile(paintDangerPosition) != null)
+                {
+                    _map.SetColor(paintDangerPosition, dangeredTilesColor);
+                    _dangeredTiles.Add(paintDangerPosition);
+                }
+            }
+        }
+
+        _shouldRepaintTiles = false;
     }
 
     private void SelectTile(Vector3Int currentCellPos)
@@ -135,11 +184,11 @@ public class TileManager : MonoBehaviour
 
                 if (_isCellSelected && cellPosition != _selectedCellPos)
                 {
-                    _map.SetColor(cellPosition, noSelectedTilesColor); // 9DB1DA
+                    _map.SetColor(cellPosition, _dangeredTiles.Contains(cellPosition) ? noSelectedDangeredTilesColor : noSelectedTilesColor); 
                 }
                 else
                 {
-                    _map.SetColor(cellPosition, Color.white);
+                    _map.SetColor(cellPosition, _dangeredTiles.Contains(cellPosition) ? dangeredTilesColor : Color.white);
                 }
             }
         }
