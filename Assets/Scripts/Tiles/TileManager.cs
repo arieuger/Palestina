@@ -115,10 +115,8 @@ public class TileManager : MonoBehaviour
 
     private void SelectTile(Vector3Int currentCellPos)
     {
-        if (_isCellSelected)
-        {
-            MakeCellDeselection();
-        }
+
+        MakeCellDeselection();
         
         if (!_isCellSelected || _selectedCellPos != currentCellPos)
         {
@@ -147,8 +145,9 @@ public class TileManager : MonoBehaviour
 
     }
 
-    private void MakeCellDeselection()
+    public void MakeCellDeselection()
     {
+        if (!_isCellSelected) return;
         Matrix4x4 oldTransformMatrix = _map.GetTransformMatrix(_selectedCellPos);
         Vector3 downTransform = oldTransformMatrix.GetPosition();
         downTransform.y -= 0.1f;
