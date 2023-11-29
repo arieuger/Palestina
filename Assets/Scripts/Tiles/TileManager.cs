@@ -1,12 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class TileManager : MonoBehaviour
 {
-    [SerializeField] private float zOffset = 0.25f;
+    [SerializeField] private float zOffset = 0.75f;
     [SerializeField] private List<TileBase> tiles;
     [SerializeField] private Color noSelectedTilesColor; // 9DB1DA
     [SerializeField] private Color dangeredTilesColor; // 
@@ -14,12 +12,11 @@ public class TileManager : MonoBehaviour
 
     private Tilemap _map;
     private Grid _grid;
-    private TilemapRenderer _tilemapRenderer;
-    private RaycastHit2D _hit;
 
     private TileBase _oldHoveredTile;
     private Vector3Int _oldHoveredTilePos;
     private string _oldHoveredTileName;
+    private PlayerActions _playerActions;
 
     private string _nonHoverColor;
     private string _hoverColor;
@@ -28,13 +25,6 @@ public class TileManager : MonoBehaviour
 
     private bool _isCellSelected;
     private Vector3Int _selectedCellPos;
-
-    private const string Zionist = "-z-";
-    private const string Palestinian = "-p-";
-    private const string White = "w-";
-    private const string Green = "g-";
-    private const string Red = "r-";
-    private const string DarkRed = "d-";
 
     private bool _shouldRepaintTiles = true;
 
@@ -45,11 +35,14 @@ public class TileManager : MonoBehaviour
         _map = GetComponent<Tilemap>();
         _map.RefreshAllTiles();
         _grid = _map.layoutGrid;
-        _tilemapRenderer = GetComponent<TilemapRenderer>();
+        _playerActions = GetComponent<PlayerActions>();
     }
 
     void Update()
     {
+
+        if (_playerActions.IsUsingProtest) return;
+        
         Vector3Int currentCellPos = GetMousePosition();
         TileBase tile = _map.GetTile(currentCellPos);
         
@@ -65,15 +58,15 @@ public class TileManager : MonoBehaviour
     {
         if (_oldHoveredTile != null && ((_oldHoveredTilePos != _selectedCellPos && _isCellSelected) || !_isCellSelected))
         {
-            _oldTileNonHoverColor = _oldHoveredTile.name.Contains(Zionist) ? Red : White;
-            _oldTileHoverColor = _oldHoveredTile.name.Contains(Zionist) ? DarkRed : Green;
+            _oldTileNonHoverColor = _oldHoveredTile.name.Contains(Constants.Zionist) ? Constants.Red : Constants.White;
+            _oldTileHoverColor = _oldHoveredTile.name.Contains(Constants.Zionist) ? Constants.DarkRed : Constants.Green;
             _map.SetTile(_oldHoveredTilePos, tiles.Find(t => t.name.Equals(_oldHoveredTileName.Replace(_oldTileHoverColor, _oldTileNonHoverColor))));
         }
 
         if (tile == null) return;
         
-        _nonHoverColor = tile.name.Contains(Zionist) ? Red : White;
-        _hoverColor = tile.name.Contains(Zionist) ? DarkRed : Green;
+        _nonHoverColor = tile.name.Contains(Constants.Zionist) ? Constants.Red : Constants.White;
+        _hoverColor = tile.name.Contains(Constants.Zionist) ? Constants.DarkRed : Constants.Green;
 
         TileBase replaceTile = tiles.Find(t => t.name.Equals(tile.name.Replace(_nonHoverColor, _hoverColor)));
         _map.SetTile(currentCellPos, replaceTile);
@@ -162,8 +155,8 @@ public class TileManager : MonoBehaviour
         _map.SetTransformMatrix(_selectedCellPos, Matrix4x4.TRS(downTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
 
         TileBase deselectTile = _map.GetTile(_selectedCellPos);
-        string deselectTileHColor = deselectTile.name.Contains(Zionist) ? DarkRed : Green;
-        string deselectTileNhColor = deselectTile.name.Contains(Zionist) ? Red : White;
+        string deselectTileHColor = deselectTile.name.Contains(Constants.Zionist) ? Constants.DarkRed : Constants.Green;
+        string deselectTileNhColor = deselectTile.name.Contains(Constants.Zionist) ? Constants.Red : Constants.White;
         _map.SetTile(_selectedCellPos,
             tiles.Find(t => t.name.Equals(deselectTile.name.Replace(deselectTileHColor, deselectTileNhColor))));
     }

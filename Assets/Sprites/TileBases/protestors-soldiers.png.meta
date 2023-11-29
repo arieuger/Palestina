@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2fa93d2793d0ba0a1ae5bcc93f1a6b88
+guid: 7d25d3cca176b2e6eba991930a716038
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -123,28 +123,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: w-journalists_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 68
-        width: 34
-        height: 34
-      alignment: 9
-      pivot: {x: 0.5, y: 0.25}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8df3e313d33a4dfc1926109bf157aec9
-      internalID: 911767759
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: w-journalists_1
+      name: protestors-soldiers_0
       rect:
         serializedVersion: 2
         x: 0
@@ -158,14 +137,35 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5a95aec5e44dd463cbd2ae483f2f76b4
-      internalID: -445804256
+      spriteID: eae733ed59105f20da27f1a557124c2f
+      internalID: 1214544055
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: w-journalists_2
+      name: protestors-soldiers_1
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 34
+        width: 34
+        height: 34
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d87f747b951b41d1c84293cb7f5752f6
+      internalID: 1498839675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: protestors-soldiers_2
       rect:
         serializedVersion: 2
         x: 0
@@ -179,8 +179,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b4dae45480ee9fd1685a9a8ca062d2cb
-      internalID: -558803597
+      spriteID: 10c1657ebc7e07f5da5b81a2497f6de6
+      internalID: 2056004307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: protestors-soldiers_3
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 0
+        width: 34
+        height: 34
+      alignment: 9
+      pivot: {x: 0.5, y: 0.25}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b585739390ea1a1ed88d9fe0114ea47d
+      internalID: -1112097562
       vertices: []
       indices: 
       edges: []
@@ -196,9 +217,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      w-journalists_0: 911767759
-      w-journalists_1: -445804256
-      w-journalists_2: -558803597
+      protestors-soldiers_0: 1214544055
+      protestors-soldiers_1: 1498839675
+      protestors-soldiers_2: 2056004307
+      protestors-soldiers_3: -1112097562
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
