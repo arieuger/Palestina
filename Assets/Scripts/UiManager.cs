@@ -23,8 +23,7 @@ public class UiManager : MonoBehaviour
     public void SetSelectedElementText(string text)
     {
         string key = _elementsDictionary.Keys.ToList().Find(text.Contains);
-        if (key != null) selectedElementText.text = _elementsDictionary[key];
-        else selectedElementText.text = "";
+        selectedElementText.text = key != null ? _elementsDictionary[key] : "";
     }
 
 }
