@@ -58,7 +58,7 @@ public class PlayerActions : MonoBehaviour
         if (tile != null && tile.name.Contains("-terrain"))
         {
             _actionTilePosition = currentCellPos;
-            UpdateToActionTile(_actionTilePosition);
+            UpdateToActionTile();
         }
     }
 
@@ -70,18 +70,18 @@ public class PlayerActions : MonoBehaviour
         if (maybeTerrainTile != null && maybeTerrainTile.name.Contains("-terrain"))
         {
             _actionTilePosition = cellPosition;
-            UpdateToActionTile(cellPosition);
+            UpdateToActionTile();
             return true;
         }
 
         return false;
     }
 
-    private void UpdateToActionTile(Vector3Int cellPosition)
+    private void UpdateToActionTile()
     {
         Matrix4x4 transformMatrix;
         
-        if (_oldHoveredTile != null && _oldHoveredTilePos != cellPosition)
+        if (_oldHoveredTile != null && _oldHoveredTilePos != _actionTilePosition)
         {
             transformMatrix = _map.GetTransformMatrix(_oldHoveredTilePos);
             Vector3 downTransform = transformMatrix.GetPosition();
@@ -90,14 +90,14 @@ public class PlayerActions : MonoBehaviour
             _map.SetTile(_oldHoveredTilePos, _oldHoveredTile);
         }
 
-        transformMatrix = _map.GetTransformMatrix(cellPosition);
+        transformMatrix = _map.GetTransformMatrix(_actionTilePosition);
         Vector3 upTransform = transformMatrix.GetPosition();
         upTransform.y += 0.1f;
-        _map.SetTransformMatrix(cellPosition, Matrix4x4.TRS(upTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
+        _map.SetTransformMatrix(_actionTilePosition, Matrix4x4.TRS(upTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
         
-        _oldHoveredTile = _map.GetTile(cellPosition);
-        _oldHoveredTilePos = cellPosition;
-        _map.SetTile(cellPosition, _selectedActionTile);
+        _oldHoveredTile = _map.GetTile(_actionTilePosition);
+        _oldHoveredTilePos = _actionTilePosition;
+        _map.SetTile(_actionTilePosition, _selectedActionTile);
     }
 
     private void GetFirstCenteredCell()

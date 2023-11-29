@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -28,7 +29,7 @@ public class TileManager : MonoBehaviour
 
     private bool _shouldRepaintTiles = true;
 
-    private List<Vector3Int> _dangeredTiles = new List<Vector3Int>();
+    private Dictionary<Vector3Int, Color> TileColors { get; set; }
 
     void Start()
     {
@@ -36,6 +37,7 @@ public class TileManager : MonoBehaviour
         _map.RefreshAllTiles();
         _grid = _map.layoutGrid;
         _playerActions = GetComponent<PlayerActions>();
+        TileColors = new Dictionary<Vector3Int, Color>();
     }
 
     void Update()
@@ -105,7 +107,7 @@ public class TileManager : MonoBehaviour
                 if (_map.GetTile(paintDangerPosition) != null)
                 {
                     _map.SetColor(paintDangerPosition, dangeredTilesColor);
-                    _dangeredTiles.Add(paintDangerPosition);
+                    TileColors.Add(paintDangerPosition, dangeredTilesColor);
                 }
             }
         }
@@ -173,11 +175,11 @@ public class TileManager : MonoBehaviour
 
                 if (_isCellSelected && cellPosition != _selectedCellPos)
                 {
-                    _map.SetColor(cellPosition, _dangeredTiles.Contains(cellPosition) ? noSelectedDangeredTilesColor : noSelectedTilesColor); 
+                    _map.SetColor(cellPosition, TileColors.ContainsKey(cellPosition) ? noSelectedDangeredTilesColor : noSelectedTilesColor); 
                 }
                 else
                 {
-                    _map.SetColor(cellPosition, _dangeredTiles.Contains(cellPosition) ? dangeredTilesColor : Color.white);
+                    _map.SetColor(cellPosition, TileColors.ContainsKey(cellPosition) ? dangeredTilesColor : Color.white);
                 }
             }
         }
