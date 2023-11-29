@@ -10,9 +10,12 @@ public class PlayerActions : MonoBehaviour
     
     [SerializeField] private float zOffset = 0.75f;
     [SerializeField] private Color darkenedTilesColor; // 9DB1DA
+    [SerializeField] private TileBase greenProtestorsTile;
     
     private Tilemap _map;
     private Grid _grid;
+    
+    private Vector3Int _selectingActionTile;
 
     void Start()
     {
@@ -20,39 +23,62 @@ public class PlayerActions : MonoBehaviour
         _grid = _map.layoutGrid;
     }
 
-    public void TestingButton()
+    public void SelectProtestButton()
     {
         Debug.Log("Testing button");
 
-        GetFirstCenteredCell();
+        IsUsingProtest = true;
+        GetFirstCenteredCell(greenProtestorsTile);
     }
 
-    private void GetFirstCenteredCell()
+    private void GetFirstCenteredCell(TileBase actionTile)
     {
         BoundsInt bounds = _map.cellBounds;
         for (int x = 0; x >= bounds.min.x; x--)
         {
             for (int y = 0; y >= bounds.min.y; y--)
             {
-                if (GetFirstCenteredCellWhenFound(x, y)) return;
+                Debug.Log("Primeiro");
+                if (GetFirstCenteredCellWhenFound(actionTile, x, y)) return;
             }
         }
+
         for (int x = 0; x < bounds.max.x; x++)
         {
             for (int y = 0; y < bounds.min.y; y++)
             {
-                if (GetFirstCenteredCellWhenFound(x, y)) return;
+                Debug.Log("Segundo");
+                if (GetFirstCenteredCellWhenFound(actionTile, x, y)) return;
+            }
+        }
+        
+        for (int x = 0; x < bounds.max.x; x++)
+        {
+            for (int y = 0; y >= bounds.min.y; y--)
+            {
+                Debug.Log("Terceiro");
+                if (GetFirstCenteredCellWhenFound(actionTile, x, y)) return;
+            }
+        }
+        
+        for (int x = 0; x >= bounds.min.x; x--)
+        {
+            for (int y = 0; y < bounds.min.y; y++)
+            {
+                Debug.Log("Cuarto");
+                if (GetFirstCenteredCellWhenFound(actionTile, x, y)) return;
             }
         }
     }
 
-    private bool GetFirstCenteredCellWhenFound(int x, int y)
+    private bool GetFirstCenteredCellWhenFound(TileBase actionTile, int x, int y)
     {
         var cellPosition = new Vector3Int(x, y, 0);
         var maybeTerrainTile = _map.GetTile(cellPosition);
 
         if (maybeTerrainTile != null && maybeTerrainTile.name.Contains("-terrain"))
         {
+            _map.SetTile(cellPosition, greenProtestorsTile);
             _map.SetColor(cellPosition, Color.blue);
             return true;
         }
