@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -7,9 +6,6 @@ public class TileManager : MonoBehaviour
 {
     [SerializeField] private float zOffset = 0.75f;
     [SerializeField] private List<TileBase> tiles;
-    [SerializeField] private Color noSelectedTilesColor; // 9DB1DA
-    [SerializeField] private Color dangeredTilesColor; // 
-    [SerializeField] private Color noSelectedDangeredTilesColor; // 
 
     private Tilemap _map;
     private Grid _grid;
@@ -106,8 +102,8 @@ public class TileManager : MonoBehaviour
 
                 if (_map.GetTile(paintDangerPosition) != null)
                 {
-                    _map.SetColor(paintDangerPosition, dangeredTilesColor);
-                    TileColors[paintDangerPosition] = dangeredTilesColor;
+                    _map.SetColor(paintDangerPosition, ColorManager.Instance.dangeredTilesColor);
+                    TileColors[paintDangerPosition] = ColorManager.Instance.dangeredTilesColor;
                 }
             }
         }
@@ -175,14 +171,11 @@ public class TileManager : MonoBehaviour
 
                 if (_isCellSelected && cellPosition != _selectedCellPos)
                 {
-                    _map.SetColor(cellPosition, TileColors.ContainsKey(cellPosition) ? noSelectedDangeredTilesColor : noSelectedTilesColor); 
-                    if (_map.GetColor(cellPosition).Equals(noSelectedDangeredTilesColor)) TileColors[cellPosition] = noSelectedDangeredTilesColor;
-                    
+                    _map.SetColor(cellPosition, TileColors.ContainsKey(cellPosition) ? ColorManager.Instance.darkDangeredTilesColor : ColorManager.Instance.darkenedTilesColor);
                 }
                 else
                 {
-                    _map.SetColor(cellPosition, TileColors.ContainsKey(cellPosition) ? dangeredTilesColor : Color.white);
-                    if (_map.GetColor(cellPosition).Equals(dangeredTilesColor)) TileColors[cellPosition] = dangeredTilesColor;
+                    _map.SetColor(cellPosition, TileColors.ContainsKey(cellPosition) ? ColorManager.Instance.dangeredTilesColor : Color.white);
                 }
             }
         }

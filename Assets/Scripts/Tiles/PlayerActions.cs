@@ -10,7 +10,6 @@ public class PlayerActions : MonoBehaviour
     public bool IsUsingProtest { get; private set; }
     
     [SerializeField] private float zOffset = 0.75f;
-    [SerializeField] private Color darkenedTilesColor; // 9DB1DA
     [SerializeField] private TileBase greenProtestorsTile;
     
     private Tilemap _map;
@@ -149,9 +148,14 @@ public class PlayerActions : MonoBehaviour
                 var tile = _map.GetTile(cellPosition);
                 if (tile == null) continue;
                 
-                _map.SetColor(cellPosition, _tileManager.TileColors.TryGetValue(cellPosition, out var color) ? 
-                    color : cellPosition == _actionTilePosition ? Color.white : darkenedTilesColor); 
-                
+                if (cellPosition == _actionTilePosition) {
+                    _map.SetColor(cellPosition, _tileManager.TileColors.TryGetValue(cellPosition, out var color) ? color : Color.white);
+                }
+                else
+                {
+                    _map.SetColor(cellPosition, _tileManager.TileColors.TryGetValue(cellPosition, out var color) ? 
+                        ColorManager.Instance.GetDarkenedColor(color) : ColorManager.Instance.darkenedTilesColor);
+                }
             }
         }
     }
