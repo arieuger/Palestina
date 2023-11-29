@@ -29,7 +29,7 @@ public class TileManager : MonoBehaviour
 
     private bool _shouldRepaintTiles = true;
 
-    private Dictionary<Vector3Int, Color> TileColors { get; set; }
+    public Dictionary<Vector3Int, Color> TileColors { get; set; }
 
     void Start()
     {
@@ -107,7 +107,7 @@ public class TileManager : MonoBehaviour
                 if (_map.GetTile(paintDangerPosition) != null)
                 {
                     _map.SetColor(paintDangerPosition, dangeredTilesColor);
-                    TileColors.Add(paintDangerPosition, dangeredTilesColor);
+                    TileColors[paintDangerPosition] = dangeredTilesColor;
                 }
             }
         }
@@ -176,10 +176,13 @@ public class TileManager : MonoBehaviour
                 if (_isCellSelected && cellPosition != _selectedCellPos)
                 {
                     _map.SetColor(cellPosition, TileColors.ContainsKey(cellPosition) ? noSelectedDangeredTilesColor : noSelectedTilesColor); 
+                    if (_map.GetColor(cellPosition).Equals(noSelectedDangeredTilesColor)) TileColors[cellPosition] = noSelectedDangeredTilesColor;
+                    
                 }
                 else
                 {
                     _map.SetColor(cellPosition, TileColors.ContainsKey(cellPosition) ? dangeredTilesColor : Color.white);
+                    if (_map.GetColor(cellPosition).Equals(dangeredTilesColor)) TileColors[cellPosition] = dangeredTilesColor;
                 }
             }
         }

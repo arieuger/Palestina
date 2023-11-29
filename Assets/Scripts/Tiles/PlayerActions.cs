@@ -98,6 +98,8 @@ public class PlayerActions : MonoBehaviour
         _oldHoveredTile = _map.GetTile(_actionTilePosition);
         _oldHoveredTilePos = _actionTilePosition;
         _map.SetTile(_actionTilePosition, _selectedActionTile);
+        
+        DarkenNoActionCells();
     }
 
     private void GetFirstCenteredCell()
@@ -132,6 +134,24 @@ public class PlayerActions : MonoBehaviour
             for (int y = 0; y < bounds.min.y; y++)
             {
                 if (GetFirstCenteredCellWhenFound(x, y)) return;
+            }
+        }
+    }
+    
+    private void DarkenNoActionCells()
+    {
+        BoundsInt bounds = _map.cellBounds;
+        for (int x = bounds.min.x; x < bounds.max.x; x++)
+        {
+            for (int y = bounds.min.y; y < bounds.max.y; y++)
+            {
+                var cellPosition = new Vector3Int(x, y, 0);
+                var tile = _map.GetTile(cellPosition);
+                if (tile == null) continue;
+                
+                _map.SetColor(cellPosition, _tileManager.TileColors.TryGetValue(cellPosition, out var color) ? 
+                    color : cellPosition == _actionTilePosition ? Color.white : darkenedTilesColor); 
+                
             }
         }
     }

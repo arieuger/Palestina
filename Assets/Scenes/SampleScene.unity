@@ -1215,7 +1215,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zOffset: 0.75
-  darkenedTilesColor: {r: 0.6156863, g: 0.69411767, b: 0.85490197, a: 0}
+  darkenedTilesColor: {r: 0.6156863, g: 0.69411767, b: 0.85490197, a: 1}
   greenProtestorsTile: {fileID: 11400000, guid: b2c000360cf31ff3e8fe585024933018, type: 2}
 --- !u!1 &1213032178
 GameObject:
