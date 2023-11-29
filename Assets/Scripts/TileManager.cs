@@ -134,6 +134,7 @@ public class TileManager : MonoBehaviour
         else
         {
             _isCellSelected = false;
+            UiManager.Instance.SetSelectedElementText("");
         }
         
         DarkenUnselectedcells();
@@ -149,6 +150,7 @@ public class TileManager : MonoBehaviour
         upTransform.y += 0.1f;
         _map.SetTransformMatrix(currentCellPos, Matrix4x4.TRS(upTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
         _selectedCellPos = currentCellPos;
+        UiManager.Instance.SetSelectedElementText(_map.GetTile(_selectedCellPos).name);
 
     }
 
