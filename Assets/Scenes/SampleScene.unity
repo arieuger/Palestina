@@ -1585,7 +1585,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Protest
+  m_text: Cancel action
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1842,7 +1842,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1695190819
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1909,7 +1909,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 763455378}
         m_TargetAssemblyTypeName: PlayerActions, Assembly-CSharp
-        m_MethodName: SelectProtestButton
+        m_MethodName: CancelActionButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2496,6 +2496,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedElementText: {fileID: 1759800945}
+  cancelActionButton: {fileID: 1695190820}
+  actionButtons:
+  - {fileID: 574663617}
+  - {fileID: 1803144781}
 --- !u!4 &1910422170
 Transform:
   m_ObjectHideFlags: 0
@@ -2516,10 +2520,10 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 239127193}
+  - {fileID: 1910422170}
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1219959605}
   - {fileID: 1213032180}
   - {fileID: 1713897569}
   - {fileID: 1643520792}
-  - {fileID: 1910422170}

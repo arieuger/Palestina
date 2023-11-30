@@ -38,6 +38,11 @@ public class TileManager : MonoBehaviour
 
     void Update()
     {
+        if (_playerActions.JustFinishedSelectAction)
+        {
+            _playerActions.JustFinishedSelectAction = false;
+            return;
+        }
 
         if (_playerActions.IsUsingProtest)
         {
@@ -51,7 +56,7 @@ public class TileManager : MonoBehaviour
         HoverTileColor(tile, currentCellPos);
         if (_shouldRepaintTiles) PaintDangeredTiles();
         
-        if (tile == null) return;
+        if (tile == null || tile.name.Contains("-terrain")) return;
         if (Input.GetButtonDown("Fire1")) SelectTile(currentCellPos);
         
     }
@@ -70,7 +75,7 @@ public class TileManager : MonoBehaviour
             _map.SetTile(_oldHoveredTilePos, tiles.Find(t => t.name.Equals(_oldHoveredTileName.Replace(_oldTileHoverColor, _oldTileNonHoverColor))));
         }
 
-        if (tile == null) return;
+        if (tile == null || tile.name.Contains("-terrain")) return;
         
         _nonHoverColor = tile.name.Contains(Constants.Zionist) ? Constants.Red : Constants.White;
         _hoverColor = tile.name.Contains(Constants.Zionist) ? Constants.DarkRed : Constants.Green;
@@ -123,11 +128,6 @@ public class TileManager : MonoBehaviour
     private void SelectTile(Vector3Int currentCellPos)
     {
 
-        if (_playerActions.JustFinishedSelectAction)
-        {
-            _playerActions.JustFinishedSelectAction = false;
-            return;
-        }
         
         MakeCellDeselection();
         

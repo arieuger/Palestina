@@ -35,17 +35,26 @@ public class PlayerActions : MonoBehaviour
 
     public void SelectProtestButton()
     {
-        IsUsingProtest = true;
-        _tileManager.MakeCellDeselection();
-        _selectedActionTile = greenProtestorsTile;
-        GetFirstCenteredCell();
+        ActivateAction(greenProtestorsTile);
     }
     
     public void SelectJournalistsButton()
     {
+        ActivateAction(greenJournalistsTile);
+    }
+    
+    public void CancelActionButton()
+    {
+        CancelAction();
+        UiManager.Instance.ActivateActionButtons(true);
+    }
+
+    private void ActivateAction(TileBase selectedActionTile)
+    {
+        UiManager.Instance.ActivateActionButtons(false);
         IsUsingProtest = true;
         _tileManager.MakeCellDeselection();
-        _selectedActionTile = greenJournalistsTile;
+        _selectedActionTile = selectedActionTile;
         GetFirstCenteredCell();
     }
 
@@ -87,6 +96,7 @@ public class PlayerActions : MonoBehaviour
             
             _oldHoveredTile = null;
             JustFinishedSelectAction = true;
+            UiManager.Instance.ActivateActionButtons(true);
         }
         
         IsUsingProtest = false;
@@ -115,6 +125,22 @@ public class PlayerActions : MonoBehaviour
         _map.SetTile(_actionTilePosition, _selectedActionTile);
         
         DarkenNoActionCells();
+    }
+
+    private void CancelAction()
+    {
+        if (_oldHoveredTile != null && _oldHoveredTilePos.Equals(_actionTilePosition))
+        {
+            Matrix4x4 transformMatrix = _map.GetTransformMatrix(_oldHoveredTilePos);
+            Vector3 downTransform = transformMatrix.GetPosition();
+            downTransform.y -= 0.1f;
+            _map.SetTransformMatrix(_oldHoveredTilePos, Matrix4x4.TRS(downTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
+            _map.SetTile(_oldHoveredTilePos, _oldHoveredTile);
+            LightAllCells();
+
+            JustFinishedSelectAction = true;
+            IsUsingProtest = false;
+        }
     }
 
     private void GetFirstCenteredCell()
