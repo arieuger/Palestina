@@ -12,6 +12,7 @@ public class PlayerActions : MonoBehaviour
     
     [SerializeField] private float zOffset = 0.75f;
     [SerializeField] private TileBase greenProtestorsTile;
+    [SerializeField] private TileBase greenJournalistsTile;
     
     private Tilemap _map;
     private Grid _grid;
@@ -34,11 +35,17 @@ public class PlayerActions : MonoBehaviour
 
     public void SelectProtestButton()
     {
-        Debug.Log("Testing button");
-
         IsUsingProtest = true;
         _tileManager.MakeCellDeselection();
         _selectedActionTile = greenProtestorsTile;
+        GetFirstCenteredCell();
+    }
+    
+    public void SelectJournalistsButton()
+    {
+        IsUsingProtest = true;
+        _tileManager.MakeCellDeselection();
+        _selectedActionTile = greenJournalistsTile;
         GetFirstCenteredCell();
     }
 
