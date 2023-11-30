@@ -76,6 +76,8 @@ public class PlayerActions : MonoBehaviour
             _map.SetTransformMatrix(_actionTilePosition, Matrix4x4.TRS(downTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
             _map.SetTile(_actionTilePosition, _tileManager.FindReplaceTile(tile.name, Constants.Green, Constants.White));
 
+            LightAllCells();
+            
             _oldHoveredTile = null;
             JustFinishedSelectAction = true;
         }
@@ -178,6 +180,19 @@ public class PlayerActions : MonoBehaviour
                     _map.SetColor(cellPosition, _tileManager.TileColors.TryGetValue(cellPosition, out var color) ? 
                         ColorManager.Instance.GetDarkenedColor(color) : ColorManager.Instance.darkenedTilesColor);
                 }
+            }
+        }
+    }
+
+    private void LightAllCells()
+    {
+        BoundsInt bounds = _map.cellBounds;
+        for (int x = bounds.min.x; x < bounds.max.x; x++)
+        {
+            for (int y = bounds.min.y; y < bounds.max.y; y++)
+            {
+                var cellPosition = new Vector3Int(x, y, 0);
+                _map.SetColor(cellPosition, _tileManager.TileColors.TryGetValue(cellPosition, out var color) ? color : Color.white);
             }
         }
     }
