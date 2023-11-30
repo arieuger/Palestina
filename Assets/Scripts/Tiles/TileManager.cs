@@ -39,7 +39,11 @@ public class TileManager : MonoBehaviour
     void Update()
     {
 
-        if (_playerActions.IsUsingProtest) return;
+        if (_playerActions.IsUsingProtest)
+        {
+            _isCellSelected = false;
+            return;
+        }
         
         Vector3Int currentCellPos = GetMousePosition();
         TileBase tile = _map.GetTile(currentCellPos);
@@ -50,6 +54,11 @@ public class TileManager : MonoBehaviour
         if (tile == null) return;
         if (Input.GetButtonDown("Fire1")) SelectTile(currentCellPos);
         
+    }
+
+    public TileBase FindReplaceTile(string originalTilename, string oldValue, string newValue)
+    {
+        return tiles.Find(t => t.name.Equals(originalTilename.Replace(oldValue, newValue)));
     }
 
     private void HoverTileColor(TileBase tile, Vector3Int currentCellPos)
@@ -114,6 +123,12 @@ public class TileManager : MonoBehaviour
     private void SelectTile(Vector3Int currentCellPos)
     {
 
+        if (_playerActions.JustFinishedSelectAction)
+        {
+            _playerActions.JustFinishedSelectAction = false;
+            return;
+        }
+        
         MakeCellDeselection();
         
         if (!_isCellSelected || _selectedCellPos != currentCellPos)

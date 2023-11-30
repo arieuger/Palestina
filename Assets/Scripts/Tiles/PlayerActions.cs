@@ -8,6 +8,7 @@ public class PlayerActions : MonoBehaviour
 {
     
     public bool IsUsingProtest { get; private set; }
+    public bool JustFinishedSelectAction { get; set; }
     
     [SerializeField] private float zOffset = 0.75f;
     [SerializeField] private TileBase greenProtestorsTile;
@@ -49,7 +50,7 @@ public class PlayerActions : MonoBehaviour
         TileBase tile = _map.GetTile(currentCellPos);
         
         HoverSelectActionPosition(tile, currentCellPos);
-        if (Input.GetButtonDown("Fire1")) IsUsingProtest = false;
+        if (Input.GetButtonDown("Fire1")) SelectPositionToAction();
     }
 
     private void HoverSelectActionPosition(TileBase tile, Vector3Int currentCellPos)
@@ -61,19 +62,25 @@ public class PlayerActions : MonoBehaviour
         }
     }
 
-    private bool GetFirstCenteredCellWhenFound(int x, int y)
+    private void SelectPositionToAction()
     {
-        var cellPosition = new Vector3Int(x, y, 0);
-        var maybeTerrainTile = _map.GetTile(cellPosition);
-
-        if (maybeTerrainTile != null && maybeTerrainTile.name.Contains("-terrain"))
+        if (IsUsingProtest)
         {
-            _actionTilePosition = cellPosition;
-            UpdateToActionTile();
-            return true;
-        }
+            Vector3Int currentCellPos = GetMousePosition();
+            TileBase tile = _map.GetTile(currentCellPos);
+            if (tile == null || !tile.name.Contains(_selectedActionTile.name)) return;
+        
+            Matrix4x4 transformMatrix = _map.GetTransformMatrix(_oldHoveredTilePos);
+            Vector3 downTransform = transformMatrix.GetPosition();
+            downTransform.y -= 0.1f;
+            _map.SetTransformMatrix(_actionTilePosition, Matrix4x4.TRS(downTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
+            _map.SetTile(_actionTilePosition, _tileManager.FindReplaceTile(tile.name, Constants.Green, Constants.White));
 
-        return false;
+            _oldHoveredTile = null;
+            JustFinishedSelectAction = true;
+        }
+        
+        IsUsingProtest = false;
     }
 
     private void UpdateToActionTile()
@@ -136,7 +143,22 @@ public class PlayerActions : MonoBehaviour
             }
         }
     }
-    
+
+    private bool GetFirstCenteredCellWhenFound(int x, int y)
+    {
+        var cellPosition = new Vector3Int(x, y, 0);
+        var maybeTerrainTile = _map.GetTile(cellPosition);
+
+        if (maybeTerrainTile != null && maybeTerrainTile.name.Contains("-terrain"))
+        {
+            _actionTilePosition = cellPosition;
+            UpdateToActionTile();
+            return true;
+        }
+
+        return false;
+    }
+
     private void DarkenNoActionCells()
     {
         BoundsInt bounds = _map.cellBounds;
