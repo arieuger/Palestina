@@ -46,7 +46,6 @@ public class PlayerActions : MonoBehaviour
     public void CancelActionButton()
     {
         CancelAction();
-        UiManager.Instance.ActivateActionButtons(true);
     }
 
     private void ActivateAction(TileBase selectedActionTile)
@@ -113,6 +112,7 @@ public class PlayerActions : MonoBehaviour
             downTransform.y -= 0.1f;
             _map.SetTransformMatrix(_oldHoveredTilePos, Matrix4x4.TRS(downTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
             _map.SetTile(_oldHoveredTilePos, _oldHoveredTile);
+            Debug.Log(downTransform);
         }
 
         transformMatrix = _map.GetTransformMatrix(_actionTilePosition);
@@ -132,14 +132,20 @@ public class PlayerActions : MonoBehaviour
         if (_oldHoveredTile != null && _oldHoveredTilePos.Equals(_actionTilePosition))
         {
             Matrix4x4 transformMatrix = _map.GetTransformMatrix(_oldHoveredTilePos);
-            Vector3 downTransform = transformMatrix.GetPosition();
-            downTransform.y -= 0.1f;
-            _map.SetTransformMatrix(_oldHoveredTilePos, Matrix4x4.TRS(downTransform, Quaternion.Euler(0, 0, 0), Vector3.one));
+            if (!transformMatrix.GetPosition().Equals(Vector3.zero))
+            {
+                Vector3 downTransform = transformMatrix.GetPosition();
+                downTransform.y -= 0.1f;
+                _map.SetTransformMatrix(_oldHoveredTilePos, Matrix4x4.TRS(downTransform, Quaternion.Euler(0, 0, 0), Vector3.one));    
+            }
+            
             _map.SetTile(_oldHoveredTilePos, _oldHoveredTile);
             LightAllCells();
 
-            JustFinishedSelectAction = true;
             IsUsingProtest = false;
+            _oldHoveredTile = null;
+            JustFinishedSelectAction = true;
+            UiManager.Instance.ActivateActionButtons(true);
         }
     }
 
